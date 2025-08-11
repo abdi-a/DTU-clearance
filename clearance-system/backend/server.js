@@ -1,21 +1,26 @@
-require('dotenv').config();         // load .env values
+require('dotenv').config();         
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();  // loads .env into process.env
 
 const app = express();
 
 // small helpers (middleware)
-app.use(cors());                    // allow frontend to call backend
-app.use(express.json());            // read JSON body in requests
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
+app.use(cors());                    
+app.use(express.json());            
 
 // a simple test route so we know server is alive
 app.get('/', (req, res) => {
   res.send('Clearance backend is alive');
 });
+
+// --- Login/Auth Routes ---
+const authRoutes = require('./routes/authRoutes');  // make sure you already have this file
+app.use('/api/auth', authRoutes);
+
+// --- Protected Routes ---
+const protectedRoutes = require('./routes/protectedRoutes'); // NEW
+app.use('/api/protected', protectedRoutes);                   // NEW
 
 // connect to MongoDB, then start the server
 const PORT = process.env.PORT || 5000;
